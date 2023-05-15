@@ -1,0 +1,80 @@
+<html>
+<head></head>
+<body>
+    <table><tr>     <th>ID</th> <th>Name</th>  <th>Age</th>   <th>Dept</th>   </tr> 
+        <%if (data.length != 0){ 
+        for (var i = 0; i < data.length; i++){ %>
+        <tr>  <td> <%= data[i].id %> </td> <td> <%=data[i].c_name %> </td>  <td> <%=data[i].age %> </td> <td> <%=  data[i].dept %> </td>  </tr>
+       <% }
+        }  
+        else{ 
+        %>
+        <td colspan="4">No Data Found</td>  </tr>
+        <% } %>
+        </table>
+        <style>
+            *{
+            font-family: 'Cinzel', serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: url("https://images.unsplash.com/photo-1558244661-d248897f7bc4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cmVwZWF0aW5nJTIwcGF0dGVybnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60");
+            background-repeat: repeat-y;
+            background-size: cover;
+        }
+        h2{
+          background-color: white;
+          border-radius:20px;
+          padding: 10px;
+        }
+        th{
+          color:brown;
+        }
+        table, th ,td{
+          border: 1px black solid;
+          padding: 10px;
+          text-align: center;
+        }
+        table{ 
+    width:60%;
+    align-self: center;
+    margin-top: 15%;
+    margin-bottom: 55%;
+    border-radius: 8px;
+    text-align: center;
+    background-color: rgba(249, 241, 231, 0.956);
+}
+        
+        span{
+            display: flex;
+            justify-content: space-between;
+        }
+        h1 hr {
+            margin-top: -5px;
+        }
+        button{
+        border-radius: 15px;
+        border: 0.5px solid black;
+        font-weight: 500;
+        }
+        form p {
+            margin-left: -30px;
+            margin-right: -30px;
+        }
+        input{
+            margin-bottom: 15px;
+            width: 100%;
+            height: 25px;
+            border-radius: 10px;
+            border: 0.5px solid black;
+        padding:10px
+        }
+        a, a:hover, a:visited, a:checked{
+            text-decoration: none;
+          }
+          </style>
+</body>
+</html>
