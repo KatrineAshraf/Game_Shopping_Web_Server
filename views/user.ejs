@@ -1,10 +1,23 @@
 <html>
-<head></head>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
+    <link rel='stylesheet' href='../public/stylesheets/welcome.css' />
+</head>
 <body>
-    <h2>Welcome, <span id="user">Username</span>!</h2>
-</body>
-<script type="text/script">
-    var user = <%= username %>;
-    document.getElementById("user").innerHTML = user;
-</script>
+    <div>
+        <h1>Welcome,  <%= name %>  !<hr></h1>
+             <a href="/customers">
+                <button type="submit">Check Customers</button>
+             </a >
+             <a href="/products">
+                <button type="submit">Check Products</button>
+             </a>
+             <a href="/transactions">
+                <button type="submit">Check Transactions</button>
+             </a>
+            </div>
+  
+      </body>
 </html>

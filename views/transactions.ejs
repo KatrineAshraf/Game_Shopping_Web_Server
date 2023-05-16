@@ -1,16 +1,17 @@
 <html>
 <head></head>
 <body>
-    <table><tr>     <th>ID</th><th>Image</th> <th>Name</th>  <th>Price</th>   <th>Quantity</th>   </tr> 
+    <table><tr>     <th>Order ID</th> <th>Customer</th><th colspan="2">Product</th>  <th>Price</th>   <th>Ordering Time</th> <th>Status</th>  </tr> 
         <%if (data.length != 0){ 
         for (var i = 0; i < data.length; i++){ %>
-        <tr>  <td> <%= data[i].id %> </td> <td> <img src="<%=data[i].image%>"></td><td> <%=data[i].p_name %> </td>  <td> <%=data[i].price %> </td> <td>
-             <% if( data[i].qty  == 0) { %> Out of stock! <%} else { %> <%=data[i].qty%> <% }%> </td>  </tr>
+        <tr>  <td> <%= data[i].id %> </td> <td><%= data[i].c_name %></td> <td colspan="2"> <img src="<%=data[i].image%>"><%=data[i].p_name %> </td>  <td> <%=data[i].price %> </td> <td> <%=data[i].ordered_at%> </td> 
+        <td><% if(data[i].state == 0){%> Pending <%
+        }else if (data[i].state == 1){%> Successful <% } else {%> Error <%} %></td> </tr>
        <% }
         }  
         else{ 
         %>
-        <td colspan="4">No Data Found</td>  </tr>
+        <td colspan="7">No Data Found</td>  </tr>
         <% } %>
         </table>
         <style>
@@ -27,7 +28,7 @@
             align-items: center;
             justify-content: center;
             background-image: url("https://images.unsplash.com/photo-1558244661-d248897f7bc4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cmVwZWF0aW5nJTIwcGF0dGVybnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60");
-            background-repeat: repeat-y;
+            background-repeat: repeat;
             background-size: cover;
         }
         h2{
@@ -44,7 +45,7 @@
           text-align: center;
         }
         table{ 
-    width:70%;
+
     align-self: center;
     border-radius: 8px;
     text-align: center;

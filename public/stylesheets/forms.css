@@ -10,12 +10,12 @@ body {
     background-repeat: repeat-y;
     background-size: cover;
 }
-form, table{ 
+form{ 
     padding: 0px 65px 20px 65px;
     width:220px;
     align-self: center;
     margin-top: 15%;
-    margin-bottom: 55%;
+    margin-bottom: 25%;
     border-radius: 22px;
     text-align: center;
     background-color: rgba(250, 235, 215, 0.956);
@@ -31,7 +31,9 @@ button{
 border-radius: 15px;
 border: 0.5px solid black;
 font-weight: 500;
-
+}
+button:hover{
+    background-color: bisque;
 }
 form p {
     margin-left: -30px;
@@ -47,8 +49,4 @@ padding:10px
 }
 a, a:hover, a:visited, a:checked{
     text-decoration: none;
-    color:black;
   }
-  button:hover{
-    background-color: bisque;
-}

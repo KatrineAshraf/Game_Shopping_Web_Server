@@ -4,7 +4,7 @@
     <table><tr>     <th>ID</th> <th>Name</th>  <th>Age</th>   <th>Dept</th>   </tr> 
         <%if (data.length != 0){ 
         for (var i = 0; i < data.length; i++){ %>
-        <tr>  <td> <%= data[i].id %> </td> <td> <%=data[i].c_name %> </td>  <td> <%=data[i].age %> </td> <td> <%=  data[i].dept %> </td>  </tr>
+        <tr>  <td> <%= data[i].id %> </td> <td> <%=data[i].c_name %> </td>  <td> <%=data[i].age %> </td> <td> <%=  data[i].dept %>  L.E.</td>  </tr>
        <% }
         }  
         else{ 
