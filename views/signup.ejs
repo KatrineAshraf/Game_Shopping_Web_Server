@@ -2,15 +2,23 @@
 <head>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
-        <link rel='stylesheet' href='../public/stylesheets/forms.css' />
+        <link rel='stylesheet' href='stylesheets/forms.css' />
 </head>
 <body>
    <form action="/signup" method="post">
     <h1>Sign up<hr></h1>
-     <input type="text" placeholder="Name" name="username">
-     <input type="number" placeholder="Age" name="age">
-     <input type="password" placeholder="Password" name="password">
-     <input type="password" placeholder="Confirm Password" name="confirm">
+  <span>   <input type="text" placeholder="First Name" name="fname" required>
+    <input type="text" placeholder="Last Name" name="lname" required>
+   </span>  <input type="email" placeholder="Email" name="email" required>
+   <% if(email == "!") { %>
+   <p class="warning">email already exists!</p>
+     <a href="/signup" class="warn">login here</a>
+     <%}%>
+     <input type="password" placeholder="Password" name="password" required>
+     <input type="password" placeholder="Confirm Password" name="confirm" required>
+     <% if(state == false) { %>
+     <p class="warning">Passwords are not matching!</p>
+     <%}%>
      <button type="submit">Sign up</button>
   </form>
 </body>

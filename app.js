@@ -12,7 +12,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 // view engine setup
 app.use('/', indexRouter);
 //app.use('/users', usersRouter);
-
+app.use(express.static('public'));
 var jsonParser = bodyParser.json()
 
 app.set('views', path.join(__dirname, 'views'));

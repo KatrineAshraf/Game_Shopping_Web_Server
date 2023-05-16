@@ -2,13 +2,20 @@
 <head>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
-        <link rel='stylesheet' href='../public/stylesheets/index.css' />
+        <link rel='stylesheet' href='stylesheets/forms.css' />
 </head>
 <body>
    <form action="/login" method="post">
     <h1>Sign in<hr></h1>
-     <input type="text" placeholder="Name" name="username">
-     <input type="password" placeholder="Password" name="password">
+     <input type="email" placeholder="Email" name="email" required>
+   <% if (email =="!") {%> 
+     <p class="warning">email not found!</p>
+     <a href="/signup" class="warn">create an account here</a>
+   <%}%> 
+     <input type="password" placeholder="Password" name="password" required>
+     <% if (pass == "!") {%>
+     <p class="warning">invalid password!</p>
+     <%}%>
      <button type="submit">Sign In</button>
   </form>
 
