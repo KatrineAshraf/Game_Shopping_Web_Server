@@ -1,23 +1,77 @@
 <html>
+
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
-    <link rel='stylesheet' href='stylesheets/tables.css' />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
+  <link rel='stylesheet' href='/stylesheets/tables.css' />
 
 </head>
+
 <body>
-    <table><tr>     <th>ID</th><th>Image</th> <th>Name</th>  <th>Price</th>   <th>Quantity</th>   </tr> 
-        <%if (data.length != 0){ 
-        for (var i = 0; i < data.length; i++){ %>
-        <tr>  <td> <%= data[i].id %> </td> <td> <img src="<%=data[i].image%>"></td><td> <%=data[i].p_name %> </td>  <td> <%=data[i].price %> </td> <td>
-             <% if( data[i].qty  == 0) { %> Out of stock! <%} else { %> <%=data[i].qty%> <% }%> </td>  </tr>
-       <% }
+  <% if (email == 'admin@admin.com') { %>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th colspan="2">Game</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      </tr>
+      <%if (data.length != 0){
+     for (var i = 0; i < data.length; i++){ %>
+
+    <tr>
+      <td> <%= data[i].id %> </td>
+      <td colspan="2"><span class="pimg">  <img src="<%=data[i].image%>"><%=data[i].p_name %> </span> </td>
+      <td> <%=data[i].price %> L.E.</td>
+      <td class="qty"> <% if( data[i].qty  == 0) { %> Out of stock! <%} else { %> <%=data[i].qty%> <% }%> </td>
+    </tr>
+    <% }
         }  
         else{ 
         %>
-        <td colspan="4">No Data Found</td>  </tr>
-        <% } %>
-        </table>
+        <tr>
+    <td colspan="5">No Data Found</td>
+    </tr>
+    <% } %>
+  </table>
+  <% } else { %>
+  <table>
+    <tr>
+      <th colspan="2">Game</th>
+      <th>Price</th>
+      <%if (data.length != 0){  %>
+      <th></th>
+    </tr>
+
+    <% for (var i = 0; i < data.length; i++){ %>
+
+    <tr>
+      <td colspan="2"><span class="pimg"><img src="<%=data[i].image%>"> <%=data[i].p_name %> </span> </td>
+      <td> <%=data[i].price %> L.E.</td>
+      <td>
+        <% if( data[i].qty  == 0) { %>
+        Out of stock! </td> 
+        <%}
+        
+        else { %>
+        <form action="/products" method="post">
+            <button type="submit" >Buy !</button>
+            <input name='id' style="display: none;" value="<%=data[i].id%>" readonly>
+        </form></td>
+        
+        <% }%>
+    </tr>
+    <% }
+                }  
+                else{ 
+                %>
+                </tr> <tr></tr>
+    <td colspan="4">No Data Found</td>
+    </tr>
+    <% } %>
+  </table>
+  <%}%>
+
 </body>
 </html>

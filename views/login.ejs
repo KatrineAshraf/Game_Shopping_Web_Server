@@ -8,13 +8,9 @@
    <form action="/login" method="post">
     <h1>Sign in<hr></h1>
      <input type="email" placeholder="Email" name="email" required>
-   <% if (email =="!") {%> 
-     <p class="warning">email not found!</p>
-     <a href="/signup" class="warn">create an account here</a>
-   <%}%> 
      <input type="password" placeholder="Password" name="password" required>
-     <% if (pass == "!") {%>
-     <p class="warning">invalid password!</p>
+     <% if (pass === "!" || email ==="!") {%>
+     <p class="warning">invalid password or email!</p>
      <%}%>
      <button type="submit">Sign In</button>
   </form>

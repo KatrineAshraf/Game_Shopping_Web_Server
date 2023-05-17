@@ -7,10 +7,10 @@
 
 </head>
 <body>
-    <table><tr>     <th>ID</th> <th>Name</th>  <th>Age</th>   <th>Dept</th>   </tr> 
+    <table><tr>     <th>ID</th> <th>Name</th>  <th>Email</th>   <th>Balance</th>   </tr> 
         <%if (data.length != 0){ 
         for (var i = 0; i < data.length; i++){ %>
-        <tr>  <td> <%= data[i].id %> </td> <td> <%=data[i].c_name %> </td>  <td> <%=data[i].age %> </td> <td> <%=  data[i].dept %>  L.E.</td>  </tr>
+        <tr>  <td> <%= data[i].id %> </td> <td> <%=data[i].name %> </td>  <td> <%=data[i].email %> </td> <td> <%=  data[i].balance %>  L.E.</td>  </tr>
        <% }
         }  
         else{ 

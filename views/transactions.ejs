@@ -1,25 +1,116 @@
 <html>
-<head> 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
-    <link rel='stylesheet' href='stylesheets/tables.css' />
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
+  <link rel='stylesheet' href='stylesheets/tables.css' />
 
 
 </head>
+
 <body>
-    <table><tr>     <th>Order ID</th> <th>Customer</th><th colspan="2">Product</th>  <th>Price</th>   <th>Ordering Time</th> <th>Status</th>  </tr> 
-        <%if (data.length != 0){ 
-        for (var i = 0; i < data.length; i++){ %>
-        <tr>  <td> <%= data[i].id %> </td> <td><%= data[i].c_name %></td> <td colspan="2"> <img src="<%=data[i].image%>"><%=data[i].p_name %> </td>  <td> <%=data[i].price %> </td> <td> <%=data[i].ordered_at%> </td> 
-        <td><% if(data[i].state == 0){%> Pending <%
-        }else if (data[i].state == 1){%> Successful <% } else {%> Error <%} %></td> </tr>
-       <% }
-        }  
-        else{ 
-        %>
-        <td colspan="7">No Data Found</td>  </tr>
-        <% } %>
-        </table>
+  <% if (email=="admin@admin.com" ) { %>
+    <!-- Admin's Table -->
+    <table>
+      <tr>
+        <th>Order ID</th>
+        <th>Customer</th>
+        <th colspan="2">Product</th>
+        <th>Price</th>
+        <th>Ordering Time</th>
+        <th>Status</th>
+      </tr>
+      <%if (data.length !=0){ for (var i=0; i < data.length; i++){ %>
+        <tr>
+          <td>
+            <%= data[i].id %>
+          </td>
+          <td>
+            <%= data[i].name %>
+          </td>
+          <td colspan="2"> <span class="pimg"><img src="<%=data[i].image%>">
+              <%=data[i].product %>
+            </span>
+          </td>
+          <td>
+            <%=data[i].price %>
+          </td>
+          <td>
+            <%=data[i].ordered_at%>
+          </td>
+          <% if(data[i].state==0){%>
+            <td> Pending</td>
+         <td>
+          <form action='/process' method="post"><button type="submit" class="pr" name="process" style="color: green;" value="Confirm">Confirm</button> <input
+              value='<%= data[i].id %>' name="id" style="display:none"><button class='pr' type="submit" value="Decline"
+              name="process"  style="color: red;">Decline</button></form>
+          </td>
+
+            <% }else if (data[i].state==1) {%>
+              <td style="color:green">Successful</td>
+         
+
+
+              <% } else if (data[i].state==-1) {%>
+                <td style="color: red;">Declined</td>
+                <% }else {%> Error <%} %>
+      
+      </tr>
+        <% } }else{ %>
+          <td colspan="7">No Data Found</td>
+          </tr>
+          <% } %>
+    </table>
+    <%} else {%>
+      <!-- User's table -->
+      <table>
+        <tr>
+          <th colspan="2">Product</th>
+          <th>Price</th>
+          <th>Ordering Time</th>
+          <th>Status</th>
+        </tr>
+        <%if (data.length !=0){ var totalprice=0.0; for (var i=0; i < data.length; i++){ %>
+          <tr>
+            <td colspan="2"> <span class='pimg'><img src="<%=data[i].image%>">
+                <%=data[i].product %>
+              </span>
+            </td>
+            <td>
+              <%=data[i].price %>
+            </td>
+            <td>
+              <%=data[i].ordered_at%>
+            </td>
+            <% if(data[i].state==0){  totalprice +=data[i].price;%>
+              <td> Pending</td>
+             
+              <% }else if (data[i].state==1) {%>
+                <td style="color:green">Successful</td>
+                <% } else if (data[i].state==-1) {%>
+                  <td style="color: red;">Declined</td>
+                  <% }else {%> Error <%} %>
+          </tr>
+          <% } %>
+            <tr>
+              <th colspan="3">Total :</th>
+              <td colspan="4">
+                <%=totalprice%>
+              </td>
+            </tr>
+            <% } else{ %>
+              <td colspan="7">No Data Found</td>
+              </tr>
+              <% } %>
+                <tr id="last">
+                  <td colspan="7">
+                    <button type="button"><a href='/products'>Go to shop!</a></button>
+                  </td>
+                </tr>
+      </table>
+
+      <%}%>
 </body>
+
 </html>

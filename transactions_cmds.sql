@@ -25,4 +25,4 @@ delete from orders where id = "";
 insert into orders (c_id,p_id) values ("c_id","p_id");
 update products 
 set qty = qty - 1 
-where id = (select p_id from orders where id="");
+where id = (select p_id from orders where id="") and qty > 0;
