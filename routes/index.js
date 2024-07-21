@@ -6,9 +6,8 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var admin = 'admin@admin.com';
 var sentdata = { username: "", password: "", email: "", state: true };
 var email = "";
-var flag;
-// GETs
 
+// GETs
 router.get('/user', (req, res) => {
   if (email != '') {
     res.render("user", { name: sentdata.username });
@@ -21,42 +20,40 @@ router.get('/', (req, res) => {
 
 router.get('/customers', (req, res) => {
   if (email == admin) {
-    db.query("SELECT * from allcustomers", function (err, data, fields) {
-      if (err) throw err;
-      res.render('customers', { data: data })
-    });
+ 
+      queryAsync('SELECT * FROM allcustomers')
+      .then((customers) =>{
+        res.render('customers', { data: customers })
+      });
   }
   else {
-    res.locals.message = 'Invalid Entry'
-    res.status(err.status || 500);
-    res.render('error');
+      res.redirect('/login'); // Redirect if email is not set
   }
 });
 
 router.get('/products', (req, res) => {
   if (email != '') {
-    db.query("SELECT * from products", function (err, data, fields) {
-      if (err) throw err;
-      res.render('products', { data: data, email: email })
-    })
+    queryAsync("SELECT * FROM products")
+    .then((products) => {res.render('products', { data: products, email: email })})
   }
 })
 
 router.get('/transactions', (req, res) => {
   if (email === 'admin@admin.com') {
-    db.query("SELECT * from transactions order by ordered_at DESC", function (err, data, fields) {
-      if (err) throw err;
-      res.render('transactions', { data: data, email: email });
-
-    })
-  }
+   queryAsync("SELECT * FROM transactions ORDER BY ordered_at DESC")
+   .then((transactions) => {
+   
+    res.render('transactions', { data: transactions, email: email });
+  }) 
+}
   else if (email != ''){
-    db.query("SELECT * from transactions where c_id = (select id from customers where email = ? ) order by ordered_at DESC",[email], function (err, data, fields) {
-      if (err) throw err;
-      res.render('transactions', { data: data, email: email });
-
-    })
-  }
+    console.log(email)
+    queryAsync("SELECT * FROM transactions WHERE name = (SELECT name FROM customers WHERE email = ? ) ORDER BY ordered_at DESC", [email])
+    .then((transactions) => {
+      console.log('Transactions:', transactions); 
+      res.render('transactions', { data: transactions, email: email });
+    }) 
+}
 })
 
 router.get('/login', (req, res) => {
@@ -80,173 +77,163 @@ router.get('/admin', (req, res) => {
     res.render('error');
   }
 })
-// POSTs
 
+// POSTs
 router.post('/login', urlencodedParser, (req, res) => {
-  sentdata.email = req.body.email;
-  sentdata.password = req.body.password;
+  
   // no database connection
-  if (sentdata.email === admin && sentdata.password === '0000') {
+  if ( req.body.email === admin && req.body.password === '0000') {
     sentdata.username = 'admin'
-    email = sentdata.email;
+    email = req.body.email;
     res.redirect('/admin')
+    sentdata.email = req.body.email;
+    sentdata.password = req.body.password;
   }
   else {
-    LoginUser(sentdata.email, sentdata.password, res)
+   LoginUser(req.body.email, req.body.password, res)
     }
   })
 
 router.post('/signup', urlencodedParser, (req, res) => {
   let password = req.body.password;
   let confirm = req.body.confirm;
-  sentdata.email = req.body.email;
+  
 if (password != confirm) {
     sentdata.state = false;
     res.redirect('/signup');
   }
 
   else {
-    var sql = 'SELECT * FROM customers where email = \"' + sentdata.email+'\";'
-  db.query(sql, function (err, data, fields) {
-    if (err) throw err;
-    console.log();
-    if (data.length > 0) {
+    try{
+    queryAsync('SELECT * FROM customers where email =  ?', [req.body.email])
+    .then((customers) => {
+    if (customers.length > 0) {
       sentdata.email = "!";
       res.redirect('/signup')
     }
     else {
-       sentdata.email = req.body.email
-    sentdata.password = req.body.password;
-    let fname = req.body.fname;
-    let lname = req.body.lname;
-    adduser(sentdata.email, sentdata.password, lname, fname);
-    res.redirect('/user');
-    }
-  })
-   
-  }
+    adduser(req.body.email, req.body.password, req.body.lname, req.body.fname, res); 
+    
+    }})
+    
+  } catch (err) {
+  console.error('Error in /user route:', err);
+  res.status(500).render('error');
+}
+}
 });
 
 router.post('/products', urlencodedParser, (req, res) => {
-  let id = req.body.id;
-  addOrder(id, email);
-  res.redirect('/transactions')
+ addOrder(req.body.id, sentdata.email).then(() => { res.redirect('/transactions') });
 });
 
 router.post('/process', urlencodedParser, (req, res) => {
   let id = req.body.id;
   if (req.body.process === 'Decline'){
-       Rollback(id);
-       res.redirect('/transactions')
+     Rollback(id).then(() => { res.redirect('/transactions')})
+      
   }
   else if (req.body.process === 'Confirm'){
-         Proceed(id);
-         res.redirect('/transactions')
+        Proceed(id).then(() => { res.redirect('/transactions')})
   }
 });
 
 // functions
 
- function LoginUser(e_mail, password, res) {
-  var flag = false;
-  var sql = 'SELECT * FROM customers where email =\"'+e_mail+'\" and password = \"' + password+'\";'
-  db.query(sql, function (err, data, fields) {
-    if (err) throw err;
-    if( data.length > 0){
-      sentdata.username = ( data[0].fname) ;
-      email = (data[0].email);
+function LoginUser(e_mail, password, res) {
+  queryAsync('SELECT * FROM customers where email = ? and password = ?', [e_mail, password])
+  .then((customer) => {
+     if(customer.length > 0) {
+      sentdata.email = e_mail;
+      sentdata.password = password;
+      sentdata.username = customer[0].fname ;
+      email = e_mail;
       res.redirect('/user')
     }
     else {
       sentdata.email = '!'; 
       res.redirect('/login')
     }
-  })   
-}
-
-function adduser(e_mail, password, lname, fname) {
-  var sql = 'INSERT INTO customers (fname, lname,email, password) VALUES (\"' + fname + '\",\"' + lname + '\",\"' + e_mail + '\",\"' + password + '\");';
-  db.query(sql, function (err, data, fields) {
-    if (err) throw err;
   })
-  email = e_mail;
-  sentdata.email = email;
-  sentdata.username = fname;
 }
 
-function addOrder(p_id, e_mail) {
-  // get the customer id
-  var sql = 'select * from customers where email = \"' + e_mail + '\" ;'
-  db.query(sql, function (err, data, fields) {
-    if (err) throw err;
+function adduser(e_mail, password, lname, fname, res) {
+  queryAsync('INSERT INTO customers (fname, lname, email, password) VALUES (?, ?, ?, ?)', [fname, lname, e_mail, password])
+  .then(() => {
+    email = e_mail;
+    sentdata.password = password; ;
+    sentdata.email = email;
+    sentdata.username = fname;
+    res.redirect('/user')
+  })
     
-  // decrement the quantity of the product  
-  var sql = "update products set qty = qty - 1 where id = " + p_id + " and qty > 0;"
-  db.query(sql, function (err, data, fields) {
-    if (err) throw err;
-  })
-
- // make order
-  var sql = 'insert into orders (c_id, p_id) values (' + data[0].id + ' , ' + p_id + ');'
-    db.query(sql, function (err, data, fields) {
-    if (err) throw err;
-    console.log("Order created");
-  })
-
-
-// getting product's price
-  var sql = "select * from products where id = " + p_id + " ;"
-  db.query(sql, function (err, product, fields) {
-    if (err) throw err;
-
-    // updating customer's balance
-   var sql = "update customers set balance = balance + " + product[0].price + " where id = " +  data[0].id + " ;"
-
-  db.query(sql, function (err, data, fields) {
-    if (err) throw err;
-  })
-  })
-
-  })
-  
 }
 
-function Proceed(order_id){
-  var sql =  'select * from orders where id = ' + order_id 
-  db.query(sql, function (err, order, fields) {
-    if (err) throw err;
-    var sql = 'update customers set balance = balance - (select price from products where id = ' + order[0].p_id + ') where id = ' +  order[0].c_id +';'
-    db.query(sql, function (err, data, fields) {
-      if (err) throw err;})
-    var sql = 'update orders set state = 1 where id = ' + order[0].id +';'
-    db.query(sql, function (err, data, fields) {
-      if (err) throw err;
-      console.log("Order Confirmed!")
-    })
-  })
+
+async function addOrder(p_id, e_mail) {
+  try {
+    const [customer] = await queryAsync('SELECT * FROM customers WHERE email = ?', [e_mail]);
+    if (!customer) {
+      console.warn(`Could not find customer with email ${e_mail}\nreturned: ${customer}`);
+      return;
+    }
+    await queryAsync('UPDATE products SET qty = qty - 1 WHERE id = ? AND qty > 0', [p_id]);
+    await queryAsync('INSERT INTO orders (c_id, p_id) VALUES (?, ?)', [customer.id, p_id]);
+    const [product] = await queryAsync('SELECT * FROM products WHERE id = ?', [p_id]);
+    if (!product) {
+      console.warn(`Could not find product with id ${p_id}\nreturned: ${product}`);
+      return;
+    }
+    await queryAsync('UPDATE customers SET balance = balance + ? WHERE id = ?', [product.price, customer.id]);
+    console.log('Order created');
+  } catch (err) {
+    console.error(err);
+  }
 }
 
-function Rollback(id) {
-  var sql =  'select * from orders where id = ' + id 
-  db.query(sql, function (err, order, fields) {
-    if (err) throw err;
-    var sql = 'update customers set balance = balance - (select price from products where id = ' + order[0].p_id + ') where id = ' +  order[0].c_id +';'
-    db.query(sql, function (err, data, fields) {
-      if (err) throw err;
-    
-    })
-    var sql = 'update orders set state = -1 where id = ' + order[0].id +';'
-    db.query(sql, function (err, data, fields) {
-      if (err) throw err;
-    
-    })
-    var sql = 'update products set qty = qty + 1 where id = ' + order[0].p_id + ';'
-    db.query(sql, function (err, data, fields) {
-      if (err) throw err;
-      console.log("Order Cancelled!")
-    })
-  })
+async function Proceed(order_id){
+  try{
+  const [order] = await queryAsync('SELECT *  FROM orders WHERE id = ?', [order_id]);
+  if(!order){
+    console.warn(`Order id = ${order_id} was not found\nreturned: ${order}`);
+    return;
+  }
+  await queryAsync('UPDATE customers SET balance = balance - (SELECT price FROM products WHERE id = ?) WHERE id = ?', [order.p_id, order.c_id]);
+  await queryAsync('UPDATE orders SET state = 1 where id = ?', [order.id]);
+  console.log("Order Confirmed!")
+} catch (err) {
+  console.error(err);
+}
 }
 
+async function Rollback(id) {
+  console.log(id);
+  try {
+    const [order] = await queryAsync('SELECT * FROM orders WHERE id = ?', [id]);
+    if(!order){
+      console.warn(`Order id = ${order_id} was not found\nreturned: ${order}`);
+      return;
+    }
+    await queryAsync('UPDATE customers SET balance = balance - (SELECT price FROM products WHERE id = ?) WHERE id = ?', [order.p_id, order.c_id]);
+    await queryAsync('UPDATE orders SET state = -1 WHERE id = ?', [order.id]);
+    await queryAsync('UPDATE products SET qty = qty + 1 WHERE id = ?', [order.p_id]); 
+
+    console.log("Order Cancelled!");
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
+// async function to execute multiple sql commands in order
+function queryAsync(sql, params) {
+
+  return new Promise((resolve, reject) => {
+    db.query(sql, params, (err, results) => {
+      if (err) reject(err);
+      resolve(results);
+    });
+  });
+}
 
 module.exports = router;
