@@ -3,7 +3,7 @@ This is a Game-Board Shopping Website which is a Web Server and a Full Stack Web
 **1. Node.JS:** A server-side scripting tool, dealing with HTTP requests.\
 **2. EJS:** Embedded JavaScript that facilitate the dynamic of html rendering.\
 **3. MySQL:** The database that hold all the information of customers, products, and orders.\
-The database was hosted online using &ensp; <a href="https://aiven.io/free-mysql-database"><img src="https://github.com/user-attachments/assets/a173116d-d405-425c-9387-db0a2309ec9d" height=30 width=40/>Aiven</a> &ensp; which offers a free hosting service for MySQL.
+The database was hosted online using &ensp; [![img](https://aiven.io/favicons/favicon-32x32.png)](https://aiven.io/free-mysql-database) &ensp; Aiven which offers a free hosting service for MySQL.
 
 >[!IMPORTANT]
 > * `schema_creation.js` is a solo file to be run independently as it sets up the schema or restore it. Make sure to never run this file unless necessary.
