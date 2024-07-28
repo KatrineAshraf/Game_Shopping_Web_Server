@@ -14,7 +14,7 @@ The database was hosted online using &ensp; [![img](https://aiven.io/favicons/fa
 > * This app has a databse that's implemented to support Transaction procedures (Rollback and Procceding in transaction).
 > * This app has many rooms for improvement starting with UI/UX.
 
-# Snippets
+# Snippets or visit website [here](game-shopping-web-server.vercel.app)
 ![image](https://github.com/user-attachments/assets/951b8704-8d33-4681-98ee-69b0ee50fd97)
 ![image](https://github.com/user-attachments/assets/681a1cc7-faf1-464a-91fe-34101e9166f8)
 ![image](https://github.com/user-attachments/assets/56f87968-d064-4070-94ae-370d5ad82fab)
